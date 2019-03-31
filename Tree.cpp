@@ -153,21 +153,21 @@ void Tree::print_inorder(Node *root){
 
 /* Ruturns the parent of the node with the wanted value - if any */
 Node* Tree::parent_help(Node *root, int val){
-    if(root == NULL){
-        return NULL;
-    }
-    else if(root->right != NULL && root->right->data == val){
-        return root;
-    }
-    else if(root->left != NULL && root->left->data == val){
-        return root;
-    }
-    else if(root->data < val){
-        return search_node(root->right, val);
-    }
-    else{
-        return search_node(root->left, val);
-    }
+    // if(root == NULL){
+    //     return NULL;
+    // }
+    // else if(root->right != NULL && root->right->data == val){
+    //     return root;
+    // }
+    // else if(root->left != NULL && root->left->data == val){
+    //     return root;
+    // }
+    // else if(root->data < val){
+    //     return search_node(root->right, val);
+    // }
+    // else{
+    //     return search_node(root->left, val);
+    // }
     return NULL; // never reached
 }
 
