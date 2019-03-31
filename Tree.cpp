@@ -172,102 +172,102 @@ Node* Tree::parent_help(Node *root, int val){
 }
 
 bool Tree::remove_help(Node *parent, Node *cur){
-    /* The value doesnt exist int the tree */
-    if(cur == NULL){
-        throw std::invalid_argument("This value doesnt exist!!");
-    }
-    if(this->t_size == 1){
-        delete this->t_root;
-        this->t_size--;
-        return true;
-    }
-    /* The value has no children */
-    if(cur->left == NULL && cur->right == NULL){
+    // /* The value doesnt exist int the tree */
+    // if(cur == NULL){
+    //     throw std::invalid_argument("This value doesnt exist!!");
+    // }
+    // if(this->t_size == 1){
+    //     delete this->t_root;
+    //     this->t_size--;
+    //     return true;
+    // }
+    // /* The value has no children */
+    // if(cur->left == NULL && cur->right == NULL){
 
-        if(parent != NULL && parent->left != NULL && parent->left->data == cur->data){
-            parent->left = NULL;
-            delete cur;
-            this->t_size--;
-            return true;
-        }
+    //     if(parent != NULL && parent->left != NULL && parent->left->data == cur->data){
+    //         parent->left = NULL;
+    //         delete cur;
+    //         this->t_size--;
+    //         return true;
+    //     }
 
-        if(parent != NULL && parent->right != NULL && parent->right->data == cur->data){
-            parent->right = NULL;
-            delete cur;
-            this->t_size--;
-            return true;
-        }
-        /* If no parent and no children then only root exist */
-        else{
-            delete cur;
-            this->t_size--;
-            return true;
-        }
-     }
-     /* If only left child */
-     if(cur->left != NULL && cur->right == NULL){
-         Node *temp = cur->left;
-         parent->left = temp;
-         delete cur;
-         this->t_size--;
-         return true;
-     }
-    /* If only right child */ 
-     if(cur->right != NULL && cur->left == NULL){
-        Node *temp = cur->right;
-        parent->right = temp;
-        delete cur;
-        this->t_size--;
-        return true;
-     }
-    /* Two child case */
-    if(cur->right != NULL && cur->left != NULL ){
-        Node *maxNode = this->find_max(cur->left);
+    //     if(parent != NULL && parent->right != NULL && parent->right->data == cur->data){
+    //         parent->right = NULL;
+    //         delete cur;
+    //         this->t_size--;
+    //         return true;
+    //     }
+    //     /* If no parent and no children then only root exist */
+    //     else{
+    //         delete cur;
+    //         this->t_size--;
+    //         return true;
+    //     }
+    //  }
+    //  /* If only left child */
+    //  if(cur->left != NULL && cur->right == NULL){
+    //      Node *temp = cur->left;
+    //      parent->left = temp;
+    //      delete cur;
+    //      this->t_size--;
+    //      return true;
+    //  }
+    // /* If only right child */ 
+    //  if(cur->right != NULL && cur->left == NULL){
+    //     Node *temp = cur->right;
+    //     parent->right = temp;
+    //     delete cur;
+    //     this->t_size--;
+    //     return true;
+    //  }
+    // /* Two child case */
+    // if(cur->right != NULL && cur->left != NULL ){
+    //     Node *maxNode = this->find_max(cur->left);
         
-        /* If maxNode has a left child */
-        if(maxNode != NULL && maxNode->left != NULL){
-            Node *maxParent = this->parent_help(this->t_root,maxNode->data);
-            if(maxParent != NULL){
-                /* If not root */
-                if(parent != NULL){
-                   maxParent->right = maxNode->left;
-                    parent->left = maxNode;
-                    maxNode->left = cur->left;
-                    maxNode->right = cur->right;
-                   delete cur;
-                    this->t_size--;
-                    return true;   
-                }
-                /* If root */
-                else{
-                   maxParent->right = maxNode->left;
-                    this->t_root->data = maxNode->data;
-                   delete maxNode;
-                    this->t_size--;
-                    return true;
-                }
+    //     /* If maxNode has a left child */
+    //     if(maxNode != NULL && maxNode->left != NULL){
+    //         Node *maxParent = this->parent_help(this->t_root,maxNode->data);
+    //         if(maxParent != NULL){
+    //             /* If not root */
+    //             if(parent != NULL){
+    //                maxParent->right = maxNode->left;
+    //                 parent->left = maxNode;
+    //                 maxNode->left = cur->left;
+    //                 maxNode->right = cur->right;
+    //                delete cur;
+    //                 this->t_size--;
+    //                 return true;   
+    //             }
+    //             /* If root */
+    //             else{
+    //                maxParent->right = maxNode->left;
+    //                 this->t_root->data = maxNode->data;
+    //                delete maxNode;
+    //                 this->t_size--;
+    //                 return true;
+    //             }
                
-            }
+    //         }
 
-        }
-        /* If max has no left child */
-        else{
-            /* If not root */
-            if(parent != NULL){
-                parent->left = maxNode;
-                maxNode->left = cur->left;
-                maxNode->right = cur->right;
-                delete cur;
-                this->t_size--;
-                return true;  
-            }
-            /* If root */
-            else{ 
+    //     }
+    //     /* If max has no left child */
+    //     else{
+    //         /* If not root */
+    //         if(parent != NULL){
+    //             parent->left = maxNode;
+    //             maxNode->left = cur->left;
+    //             maxNode->right = cur->right;
+    //             delete cur;
+    //             this->t_size--;
+    //             return true;  
+    //         }
+    //         /* If root */
+    //         else{ 
                 
-            }
+    //         }
 
-            }
-        }
+    //         }
+    //     }
     
      
     return false;
