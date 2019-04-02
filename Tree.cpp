@@ -2,6 +2,8 @@
  * Implementation file of class "Tree"
  */
 
+#include <iostream>
+#include <cstdlib>
 #include "Tree.hpp"
 #include <stdexcept>
 using namespace ariel;
@@ -10,6 +12,23 @@ using namespace ariel;
 Tree::Tree(){
     this->t_root = NULL;
     this->t_size = 0;
+}
+/* "outline" destructor implementation: */
+Tree::~Tree(){
+    removeSubTree(this->t_root);
+}
+
+/* private method - removes all the sub-tree. */
+void Tree::removeSubTree(Node* ptr){
+    if(ptr != NULL){
+        if(ptr->left != NULL){
+            removeSubTree(ptr->left);
+        }
+        if(ptr->right != NULL){
+            removeSubTree(ptr->right);
+        }
+        delete ptr;
+    }
 }
 
 
@@ -34,10 +53,7 @@ bool Tree::insert(int data){
 
 
 bool Tree::remove(int data){
-    Node *cur = search_node(this->t_root, data);
-   Node *parent = parent_help(this->t_root, data);
-   return this->Tree::remove_help(parent,cur);
-   return true;
+  return this->remove_help(data,this->t_root);
 }
 
 /* This method returns tree size. */
@@ -54,7 +70,13 @@ bool Tree::contains(int data){
 
 /* This method returns the value of the root. */
 int Tree::root(){
-    return this->t_root->data;
+    if(this->t_root != NULL){
+        return this->t_root->data;
+    }
+    else{
+        throw std::invalid_argument("The tree is empty - there is no root!!");
+    }
+    
 }
 
 int Tree::parent(int data){
@@ -124,7 +146,7 @@ bool Tree::insert_help(Node *root, int val){
 }
 
 /* Ruturns the node with the wanted value - if any */
-Node* Tree::search_node(Node *root, int val){
+Tree::Node* Tree::search_node(Node *root, int val){
     if(root == NULL){
         return NULL;
     }
@@ -152,134 +174,200 @@ void Tree::print_inorder(Node *root){
 
 
 /* Ruturns the parent of the node with the wanted value - if any */
-Node* Tree::parent_help(Node *root, int val){
-    // if(root == NULL){
-    //     return NULL;
-    // }
-    // else if(root->right != NULL && root->right->data == val){
-    //     return root;
-    // }
-    // else if(root->left != NULL && root->left->data == val){
-    //     return root;
-    // }
-    // else if(root->data < val){
-    //     return search_node(root->right, val);
-    // }
-    // else{
-    //     return search_node(root->left, val);
-    // }
-    return NULL; // never reached
+Tree::Node* Tree::parent_help(Node *root, int val){
+    if(root == NULL){
+        return NULL;
+    }
+    else if(root->right != NULL && root->right->data == val){
+        return root;
+    }
+    else if(root->left != NULL && root->left->data == val){
+        return root;
+    }
+    else if(root->data < val){
+        return search_node(root->right, val);
+    }
+    else{
+        return search_node(root->left, val);
+    }
+    return NULL;
 }
-
-bool Tree::remove_help(Node *parent, Node *cur){
-    // /* The value doesnt exist int the tree */
-    // if(cur == NULL){
-    //     throw std::invalid_argument("This value doesnt exist!!");
-    // }
-    // if(this->t_size == 1){
-    //     delete this->t_root;
-    //     this->t_size--;
-    //     return true;
-    // }
-    // /* The value has no children */
-    // if(cur->left == NULL && cur->right == NULL){
-
-    //     if(parent != NULL && parent->left != NULL && parent->left->data == cur->data){
-    //         parent->left = NULL;
-    //         delete cur;
-    //         this->t_size--;
-    //         return true;
-    //     }
-
-    //     if(parent != NULL && parent->right != NULL && parent->right->data == cur->data){
-    //         parent->right = NULL;
-    //         delete cur;
-    //         this->t_size--;
-    //         return true;
-    //     }
-    //     /* If no parent and no children then only root exist */
-    //     else{
-    //         delete cur;
-    //         this->t_size--;
-    //         return true;
-    //     }
-    //  }
-    //  /* If only left child */
-    //  if(cur->left != NULL && cur->right == NULL){
-    //      Node *temp = cur->left;
-    //      parent->left = temp;
-    //      delete cur;
-    //      this->t_size--;
-    //      return true;
-    //  }
-    // /* If only right child */ 
-    //  if(cur->right != NULL && cur->left == NULL){
-    //     Node *temp = cur->right;
-    //     parent->right = temp;
-    //     delete cur;
-    //     this->t_size--;
-    //     return true;
-    //  }
-    // /* Two child case */
-    // if(cur->right != NULL && cur->left != NULL ){
-    //     Node *maxNode = this->find_max(cur->left);
-        
-    //     /* If maxNode has a left child */
-    //     if(maxNode != NULL && maxNode->left != NULL){
-    //         Node *maxParent = this->parent_help(this->t_root,maxNode->data);
-    //         if(maxParent != NULL){
-    //             /* If not root */
-    //             if(parent != NULL){
-    //                maxParent->right = maxNode->left;
-    //                 parent->left = maxNode;
-    //                 maxNode->left = cur->left;
-    //                 maxNode->right = cur->right;
-    //                delete cur;
-    //                 this->t_size--;
-    //                 return true;   
-    //             }
-    //             /* If root */
-    //             else{
-    //                maxParent->right = maxNode->left;
-    //                 this->t_root->data = maxNode->data;
-    //                delete maxNode;
-    //                 this->t_size--;
-    //                 return true;
-    //             }
-               
-    //         }
-
-    //     }
-    //     /* If max has no left child */
-    //     else{
-    //         /* If not root */
-    //         if(parent != NULL){
-    //             parent->left = maxNode;
-    //             maxNode->left = cur->left;
-    //             maxNode->right = cur->right;
-    //             delete cur;
-    //             this->t_size--;
-    //             return true;  
-    //         }
-    //         /* If root */
-    //         else{ 
+/* Remove method- recives value to delete and apointer to nod,
+    finds the nood with the same value and remove it from the tree.
+    this mothod throw exception if try to remove from an empty tree and
+     if the value doesnt exist in the tree.
+     based on : https://www.youtube.com/watch?list=PLTxllHdfUq4d-DE16EDkpeb8Z68DU7Z_Q&time_continue=210&v=ZuRwTb7ZdWk */
+bool Tree::remove_help(int val, Node* parent){
+    /* If the tree not empty. */
+    if(this->t_root != NULL){
+        /* Delete root case. */
+        if(this->t_root->data == val){
+            return removeRoot();
+        }
+        /* The node that we want to remove - not root node.  */
+        else{
+            /* Left sub-tree */
+            if(val < parent->data && parent->left != NULL){
+                if(parent->left->data == val){
+                    return removeMatch(parent, parent->left, true);
+                }
+                else{  
+                    return remove_help(val, parent->left);
+                }
                 
-    //         }
+            }
+            /* Right sub-tree */
+            else if(val > parent->data && parent->right != NULL){
+                if(parent->right->data == val){
+                    return removeMatch(parent, parent->right, false);
+                }
+                else{
+                    return remove_help(val, parent->right);
+                }
+                
+            }
+            /* The value not in the tree. */
+            else{
+                 throw std::invalid_argument("The data was not found in the tree!!");
+            }
 
-    //         }
-    //     }
-    
-     
+        }
+    }
+    /* If the tree empty. */
+    else{
+        throw std::invalid_argument("Cannot remove a node from an empty tree!!");
+    }
     return false;
     }
     
 
 
-
-Node* Tree::find_max(Node* cur){
-    Node *runner = cur;
-    while(runner->right != NULL){
-        runner = runner->right;
+/* Find smallest value in the Tree */ 
+int Tree::find_small(Node* ptr){
+    /* If the tree if empty. */
+    if(this->t_root == NULL){
+        throw std::invalid_argument("The tree is empty - there is no smallest value!!");
     }
-    return runner;
+    /* The roon isnt empty. */
+    else{
+        if(ptr->left != NULL){
+            return find_small(ptr->left);
+        }
+        /* Reache to the smallest node. */
+        else{
+            return ptr->data;
+        }
+    }
+
+}
+/* private method - removes the root node. */
+bool Tree::removeRoot(){
+    /* If the root exist. */
+    if(this->t_root != NULL){
+        Node* delPtr = this->t_root;
+        int rootKey = this->t_root->data;
+        int smallestInRightSubTree;
+
+        /* If the root have 0 child */
+        if(this->t_root->left == NULL && this->t_root->right == NULL){
+            this->t_root = NULL;
+            delete delPtr;
+            this->t_size--;
+            return true;
+        }
+        /* If the root have 1 child */ 
+        else if(this->t_root->left == NULL && this->t_root->right != NULL){
+           this->t_root = this->t_root->right;
+           delPtr->right = NULL;
+           delete delPtr;
+           this->t_size--;
+           return true; 
+        }
+        else if(this->t_root->left != NULL && this->t_root->right == NULL){
+           this->t_root = this->t_root->left;
+           delPtr->left = NULL;
+           delete delPtr;
+           this->t_size--;
+           return true; 
+        }
+
+        /* If the root have 2 child */
+        else{
+            smallestInRightSubTree = this->find_small(this->t_root->right);
+            this->remove_help(smallestInRightSubTree, this->t_root);
+            this->t_root->data = smallestInRightSubTree;
+        }
+    }
+    /* If the root doesnt exist - throw exception. */
+    else{
+        throw std::invalid_argument("Can not remove root, the tree is empty!!");
+    }
+    return false;
+}
+
+bool Tree::removeMatch(Node* parent, Node* match, bool left){
+    /* If the tree isnt empty. */
+    if(this->t_root != NULL){
+        Node* delPtr;
+        int matchVal = match-> data;
+        int smallestInRightSubTree;
+
+        /* The node that we want to delete have 0 children. */
+        if(match->left == NULL && match->right == NULL){
+            delPtr = match;
+            if(left){
+                parent->left = NULL;
+            }
+            else{
+                parent->right = NULL;
+            }  
+             
+            delete delPtr;
+            this->t_size--;
+            return true;
+        }
+
+        /* The node that we want to delete have 1 children. */
+        else if(match->left == NULL && match->right != NULL){
+            if(left){
+                parent->left = match->right;
+            }
+            else{
+                parent->right = match->right;
+            }   
+            match->right = NULL;
+            delPtr = match;
+            delete delPtr;
+            this->t_size--;
+            return true;
+        }
+
+        else if(match->left != NULL && match->right == NULL){
+            if(left){
+                parent->left = match->left;
+            }
+            else{
+               parent->right = match->left; 
+            }
+            match->left = NULL;
+            delPtr = match;
+            delete delPtr;
+            this->t_size--;
+            return true;
+        }
+        /* The node that we want to delete have 2 children. */
+        else{
+            smallestInRightSubTree = this->find_small(match->right);
+            this->remove_help(smallestInRightSubTree,match );
+            match->data = smallestInRightSubTree;
+        }
+
+
+        
+    }
+    /* If the tree is empty. */
+    else{
+       throw std::invalid_argument("Can not remove nodefrom an empty tree!!"); 
+    }
+    return false;
 }
