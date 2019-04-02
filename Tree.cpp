@@ -185,10 +185,10 @@ Tree::Node* Tree::parent_help(Node *root, int val){
         return root;
     }
     else if(root->data < val){
-        return search_node(root->right, val);
+        return parent_help(root->right, val);
     }
     else{
-        return search_node(root->left, val);
+        return parent_help(root->left, val);
     }
     return NULL;
 }
