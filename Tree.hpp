@@ -7,31 +7,39 @@ using namespace std;
 
 
 namespace ariel {
-    struct Node{
-        int data;
-        Node *left, *right;
-};
+
 
 
 class Tree {
+
     private:
+        /* Node struct */
+        struct Node{
+        int data;
+        Node *left, *right;
+    };
+        /* private data members */
         Node* t_root;
         int t_size;
 
-        
-
+        /* private methods */
+        void removeSubTree(Node* ptr);//private method- removes the sub-tree.
         bool insert_help(Node *root, int data);//help method.
-        Node* search_node(Node *root,int val);//help method.
+        Tree::Node* search_node(Node *root,int val);//help method.
         void print_inorder(Node *root);//help method.
-        Node* parent_help(Node *root,int val);//help method.
-        bool remove_help(Node *parent, Node *cur);//help method.
-        Node* find_max(Node *cur);//help method
+        Tree::Node* parent_help(Node *root,int val);//help method.
+        bool remove_help(int val, Node* parent);//help method.
+        int find_small(Node* ptr);//help method
+        bool removeRoot();//private method remove the root node.
+        bool removeMatch(Node* parent, Node* match, bool left);//private method remove node.
 
     public:
         /* "outline" constructor. */
         Tree(); 
+        /* "outline" destructor. */ 
+        ~Tree();
 
-        /* "outline" methods */
+        /* public "outline" methods */
         bool insert(int data);
         bool remove(int data);
         int size();
